@@ -5,11 +5,8 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "my-first-worker",
-  "main": "src/entry.py",
+  "main": "./src/index.ts",
   "compatibility_date": "2025-02-14",
-  "compatibility_flags": [
-    "python_workers"
-  ],
   "observability": {
     "enabled": true
   }
