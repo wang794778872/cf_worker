@@ -1,25 +1,37 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+interface Env {
+	wx_db: KVNamespace;
+}
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		console.log(request.url)
-		console.log(request.text())		
-		console.log(request.json())
 		console.log(request.method)
-		console.log(request.body)
-		console.log(request.headers)
-
-		return new Response(request.url);
+		if (request.method == "GET")
+		{
+			const {pathname, searchParams} = new URL(request.url)
+			console.log(pathname)
+			if (pathname == "/kv")
+			{
+				const k = searchParams.get("k")
+				if (!k)
+					return new Response("error");
+				const v = await env.wx_db.get(k);
+				console.log(k, v)
+				if (v)
+					return new Response(v);
+				else
+					return new Response("error");
+			}
+			else if (pathname == "/set_kv")
+			{
+				const k = searchParams.get("k")
+				const v = searchParams.get("v")
+				console.log(k, v)
+				if (!k || !v)
+					return new Response("error");
+				await env.wx_db.put(k, v);
+				return new Response("ok");
+			}
+		}
+		return new Response("failed");
 	},
 } satisfies ExportedHandler<Env>;
