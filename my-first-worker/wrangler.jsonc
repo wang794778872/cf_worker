@@ -5,11 +5,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "my-first-worker",
-  "main": "./src/index.ts",
+  "main": "src/index.ts",
   "compatibility_date": "2025-02-14",
   "observability": {
     "enabled": true
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "wx_db",
+      "id": "0cd7e7f26eb4456a9c125e8194a28876"
+    }
+  ]
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
